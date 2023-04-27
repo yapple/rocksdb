@@ -52,6 +52,7 @@
 #include "util/allocator.h"
 #include "util/coding.h"
 #include "util/random.h"
+#include "monitoring/perf_context_imp.h"
 
 namespace rocksdb {
 
@@ -603,12 +604,14 @@ InlineSkipList<Comparator>::InlineSkipList(const Comparator cmp,
 
 template <class Comparator>
 char* InlineSkipList<Comparator>::AllocateKey(size_t key_size) {
+  PERF_TIMER_GUARD(skiplist_allocate_key);
   return const_cast<char*>(AllocateNode(key_size, RandomHeight())->Key());
 }
 
 template <class Comparator>
 typename InlineSkipList<Comparator>::Node*
 InlineSkipList<Comparator>::AllocateNode(size_t key_size, int height) {
+  PERF_TIMER_GUARD(skiplist_allocate_node);
   auto prefix = sizeof(std::atomic<Node*>) * (height - 1);
 
   // prefix is space for the height - 1 pointers that we store before
@@ -633,6 +636,7 @@ InlineSkipList<Comparator>::AllocateNode(size_t key_size, int height) {
 template <class Comparator>
 typename InlineSkipList<Comparator>::Splice*
 InlineSkipList<Comparator>::AllocateSplice() {
+  PERF_TIMER_GUARD(skiplist_allocate_splice);
   // size of prev_ and next_
   size_t array_size = sizeof(Node*) * (kMaxHeight_ + 1);
   char* raw = allocator_->AllocateAligned(sizeof(Splice) + array_size * 2);
@@ -645,11 +649,13 @@ InlineSkipList<Comparator>::AllocateSplice() {
 
 template <class Comparator>
 bool InlineSkipList<Comparator>::Insert(const char* key) {
+  PERF_TIMER_GUARD(skiplist_insert);
   return Insert<false>(key, seq_splice_, false);
 }
 
 template <class Comparator>
 bool InlineSkipList<Comparator>::InsertConcurrently(const char* key) {
+  PERF_TIMER_GUARD(skiplist_insert_concurent);
   Node* prev[kMaxPossibleHeight];
   Node* next[kMaxPossibleHeight];
   Splice splice;

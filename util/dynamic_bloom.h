@@ -14,6 +14,7 @@
 
 #include <atomic>
 #include <memory>
+#include "monitoring/perf_context_imp.h"
 
 namespace rocksdb {
 
@@ -96,6 +97,7 @@ class DynamicBloom {
 inline void DynamicBloom::Add(const Slice& key) { AddHash(BloomHash(key)); }
 
 inline void DynamicBloom::AddConcurrently(const Slice& key) {
+  PERF_TIMER_GUARD(bloom_filter_add);
   AddHashConcurrently(BloomHash(key));
 }
 

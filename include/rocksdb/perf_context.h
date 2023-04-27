@@ -221,6 +221,20 @@ struct PerfContext {
   uint64_t iter_prev_cpu_nanos;
   uint64_t iter_seek_cpu_nanos;
 
+  uint64_t bloom_filter_add;
+  uint64_t skiplist_allocate_key;
+  uint64_t skiplist_allocate_node;
+  uint64_t skiplist_insert;
+  uint64_t skiplist_insert_concurent;
+  uint64_t skiplist_allocate_splice;
+  uint64_t write_memcpy;
+  uint64_t memtable_add;
+  uint64_t parallel_write_memtable;
+  uint64_t read_record_from_write_batch;
+  uint64_t put_cf_impl;
+  uint64_t insert_into;
+
+
   std::map<uint32_t, PerfContextByLevel>* level_to_perf_context = nullptr;
   bool per_level_perf_context_enabled = false;
 };

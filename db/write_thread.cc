@@ -564,6 +564,8 @@ void WriteThread::ExitAsMemTableWriter(Writer* /*self*/,
 }
 
 void WriteThread::LaunchParallelMemTableWriters(WriteGroup* write_group) {
+  // TODO 
+  PERF_TIMER_GUARD(parallel_write_memtable);
   assert(write_group != nullptr);
   write_group->running.store(write_group->size);
   for (auto w : *write_group) {

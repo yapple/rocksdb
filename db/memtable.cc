@@ -257,6 +257,8 @@ Slice MemTableRep::UserKey(const char* key) const {
 }
 
 KeyHandle MemTableRep::Allocate(const size_t len, char** buf) {
+  // TODO
+  PERF_TIMER_GUARD(skiplist_allocate_key);
   *buf = allocator_->Allocate(len);
   return static_cast<KeyHandle>(*buf);
 }
@@ -470,6 +472,8 @@ bool MemTable::Add(SequenceNumber s, ValueType type,
   //  key bytes    : char[internal_key.size()]
   //  value_size   : varint32 of value.size()
   //  value bytes  : char[value.size()]
+  // TODO
+  PERF_TIMER_GUARD(memtable_add);
   uint32_t key_size = static_cast<uint32_t>(key.size());
   uint32_t val_size = static_cast<uint32_t>(value.size());
   uint32_t internal_key_size = key_size + 8;
@@ -481,6 +485,8 @@ bool MemTable::Add(SequenceNumber s, ValueType type,
       type == kTypeRangeDeletion ? range_del_table_ : table_;
   KeyHandle handle = table->Allocate(encoded_len, &buf);
 
+  // TODO
+  PERF_TIMER_GUARD(write_memcpy);
   char* p = EncodeVarint32(buf, internal_key_size);
   memcpy(p, key.data(), key_size);
   Slice key_slice(p, key_size);
@@ -490,6 +496,8 @@ bool MemTable::Add(SequenceNumber s, ValueType type,
   p += 8;
   p = EncodeVarint32(p, val_size);
   memcpy(p, value.data(), val_size);
+  // TODO
+  PERF_TIMER_STOP(write_memcpy);
   assert((unsigned)(p + val_size - buf) == (unsigned)encoded_len);
   if (!allow_concurrent) {
     // Extract prefix for insert with hint.

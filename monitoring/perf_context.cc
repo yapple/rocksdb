@@ -364,6 +364,20 @@ void PerfContext::Reset() {
   find_next_user_entry_time = 0;
   write_pre_and_post_process_time = 0;
   write_memtable_time = 0;
+  
+  skiplist_allocate_key = 0;
+  bloom_filter_add = 0;
+  skiplist_allocate_node = 0;
+  skiplist_insert = 0;
+  skiplist_insert_concurent = 0;
+  skiplist_allocate_splice = 0;
+  write_memcpy = 0;
+  memtable_add = 0;
+  parallel_write_memtable = 0;
+  read_record_from_write_batch = 0;
+  put_cf_impl = 0;
+  insert_into = 0;
+
   write_delay_time = 0;
   write_thread_wait_nanos = 0;
   write_scheduling_flushes_compactions_time = 0;
@@ -482,6 +496,18 @@ std::string PerfContext::ToString(bool exclude_zero_counters) const {
   PERF_CONTEXT_OUTPUT(find_next_user_entry_time);
   PERF_CONTEXT_OUTPUT(write_pre_and_post_process_time);
   PERF_CONTEXT_OUTPUT(write_memtable_time);
+  PERF_CONTEXT_OUTPUT(bloom_filter_add);
+  PERF_CONTEXT_OUTPUT(skiplist_allocate_key);
+  PERF_CONTEXT_OUTPUT(skiplist_allocate_node);
+  PERF_CONTEXT_OUTPUT(skiplist_insert);
+  PERF_CONTEXT_OUTPUT(skiplist_insert_concurent);
+  PERF_CONTEXT_OUTPUT(skiplist_allocate_splice);
+  PERF_CONTEXT_OUTPUT(write_memcpy);
+  PERF_CONTEXT_OUTPUT(memtable_add);
+  PERF_CONTEXT_OUTPUT(parallel_write_memtable);
+  PERF_CONTEXT_OUTPUT(read_record_from_write_batch);
+  PERF_CONTEXT_OUTPUT(put_cf_impl);
+  PERF_CONTEXT_OUTPUT(insert_into);
   PERF_CONTEXT_OUTPUT(write_thread_wait_nanos);
   PERF_CONTEXT_OUTPUT(write_scheduling_flushes_compactions_time);
   PERF_CONTEXT_OUTPUT(db_mutex_lock_nanos);

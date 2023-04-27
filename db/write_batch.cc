@@ -56,7 +56,6 @@
 #include "util/duplicate_detector.h"
 #include "util/string_util.h"
 #include "util/util.h"
-
 namespace rocksdb {
 
 // anon namespace for file-local types
@@ -299,6 +298,8 @@ bool WriteBatch::HasRollback() const {
 Status ReadRecordFromWriteBatch(Slice* input, char* tag,
                                 uint32_t* column_family, Slice* key,
                                 Slice* value, Slice* blob, Slice* xid) {
+  // TODO
+  PERF_TIMER_GUARD(read_record_from_write_batch);
   assert(key != nullptr && value != nullptr);
   *tag = (*input)[0];
   input->remove_prefix(1);
@@ -1220,6 +1221,8 @@ class MemTableInserter : public WriteBatch::Handler {
 
   Status PutCFImpl(uint32_t column_family_id, const Slice& key,
                    const Slice& value, ValueType value_type) {
+    // TODO
+    PERF_TIMER_GUARD(put_cf_impl);
     // optimize for non-recovery mode
     if (UNLIKELY(write_after_commit_ && rebuilding_trx_ != nullptr)) {
       WriteBatchInternal::Put(rebuilding_trx_, column_family_id, key, value);
@@ -1788,6 +1791,8 @@ Status WriteBatchInternal::InsertInto(
     bool ignore_missing_column_families, uint64_t log_number, DB* db,
     bool concurrent_memtable_writes, bool seq_per_batch, size_t batch_cnt,
     bool batch_per_txn) {
+  // TODO
+  PERF_TIMER_GUARD(insert_into);
 #ifdef NDEBUG
   (void)batch_cnt;
 #endif
